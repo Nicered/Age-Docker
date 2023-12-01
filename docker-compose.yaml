@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  age:
+    image: age-env-base
+    env_file:
+      - .env
+    container_name: agedb
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
+    ports:
+      - 5432:5432
+    networks:
+      - age-net
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+      - ./.psqlrc:/root/.psqlrc
+
+  age_view:
+    image: age-env-view    
+    env_file:
+      - .env
+    networks:
+      - age-net
+    container_name: ageview
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
+    ports:
+      - 6969:3000    
+    command: ["npm","run", "start"]    
+
+volumes: 
+  db-data:
+
+networks:
+  age-net:
+    driver: bridge
+    
+    
+   
